@@ -6,6 +6,12 @@ let currentEditingQuestion = null;
 
 // Toggle admin panel
 function toggleAdminPanel() {
+    // Check if user is a teacher
+    if (!isTeacher()) {
+        showToast('管理機能は教員ユーザーのみ利用可能です', 'error');
+        return;
+    }
+
     adminMode = !adminMode;
 
     if (adminMode) {
@@ -333,6 +339,8 @@ function loadCoursesFromStorage() {
 // Load course cards dynamically
 function loadCourseCards() {
     const grid = document.querySelector('.course-grid');
+    if (!grid) return;
+
     grid.innerHTML = '';
 
     for (const courseId in CONFIG.COURSES) {
