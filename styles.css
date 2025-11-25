@@ -1145,3 +1145,20 @@ body::before {
 .loading {
     animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
+
+/* Button layout for start screen */
+.button-group-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-lg);
+}
+
+.button-group-horizontal {
+    display: flex;
+    gap: var(--spacing-md);
+}
+
+.btn-full-width {
+    width: 100%;
+}
