@@ -458,6 +458,28 @@ function returnToHome() {
     showToast('ホーム画面に戻りました', 'info');
 }
 
+// Reset progress for current course
+function resetProgress() {
+    if (!confirm('進捗をリセットしますか？問題は最初から始まります。')) {
+        return;
+    }
+
+    // Reset progress tracker
+    progressTracker.reset();
+
+    // Reset question index
+    currentQuestionIndex = 0;
+
+    // Update display
+    updateProgressDisplay(progressTracker, currentUser.name);
+
+    // Reset progress bar
+    document.getElementById('progress-bar').style.width = '0%';
+    document.getElementById('progress-text').textContent = '0 / ' + currentQuestions.length + ' 問完了';
+
+    showToast('進捗をリセットしました', 'success');
+}
+
 // Initialize app
 function initApp() {
     // Check if Google OAuth is configured
