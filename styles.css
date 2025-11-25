@@ -103,24 +103,6 @@ body::before {
 
 .header-content {
     max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.logo {
-    font-size: 1.5rem;
-    font-weight: 700;
-    background: var(--gradient-primary);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.user-info {
-    display: flex;
-    align-items: center;
     gap: var(--spacing-sm);
 }
 
