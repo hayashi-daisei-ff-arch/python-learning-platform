@@ -147,21 +147,36 @@ body::before {
     color: var(--text-muted);
 }
 
-.sign-out-btn {
-    margin-left: var(--spacing-md);
+.sign-out-btn,
+.admin-btn {
+    margin-left: var(--spacing-sm);
     padding: var(--spacing-xs) var(--spacing-md);
-    background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
     color: var(--text-primary);
     border-radius: var(--radius-sm);
     cursor: pointer;
     transition: all var(--transition-fast);
     font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.sign-out-btn {
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .sign-out-btn:hover {
     background: rgba(255, 255, 255, 0.15);
     transform: translateY(-2px);
+}
+
+.admin-btn {
+    background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+    border: none;
+}
+
+.admin-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
 }
 
 /* Auth Section */
@@ -224,6 +239,35 @@ body::before {
 /* Main Content */
 #main-content {
     display: none;
+}
+
+/* External Link Section */
+.external-link-section {
+    text-align: center;
+    margin: 2rem 0;
+}
+
+.external-link-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    transition: all var(--transition-fast);
+    box-shadow: var(--shadow-sm);
+}
+
+.external-link-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.external-link-icon {
+    font-size: 1.2rem;
 }
 
 /* Course Section */
@@ -313,6 +357,57 @@ body::before {
     font-size: 1.8rem;
     margin-bottom: var(--spacing-md);
     text-align: center;
+}
+
+/* Progress Bar */
+.progress-bar-container {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-lg);
+    height: 12px;
+    overflow: hidden;
+    margin: var(--spacing-md) 0;
+    position: relative;
+}
+
+.progress-bar {
+    height: 100%;
+    background: var(--gradient-primary);
+    border-radius: var(--radius-lg);
+    transition: width 0.5s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.3),
+            transparent);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+.progress-text {
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-top: var(--spacing-xs);
 }
 
 /* Progress Stats */
@@ -747,6 +842,256 @@ body::before {
     border-left: 4px solid var(--accent-info);
 }
 
+/* Admin Panel */
+#admin-section {
+    display: none;
+    padding: var(--spacing-xl) 0;
+}
+
+.admin-panel {
+    background: var(--bg-glass);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    margin-bottom: var(--spacing-lg);
+}
+
+.admin-panel h2 {
+    font-size: 2rem;
+    margin-bottom: var(--spacing-lg);
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.admin-tabs {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-tab {
+    padding: var(--spacing-md) var(--spacing-lg);
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    border-bottom: 3px solid transparent;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.admin-tab.active {
+    color: var(--accent-primary);
+    border-bottom-color: var(--accent-primary);
+}
+
+.admin-tab:hover {
+    color: var(--text-primary);
+}
+
+.admin-tab-content {
+    display: none;
+}
+
+.admin-tab-content.active {
+    display: block;
+}
+
+.form-group {
+    margin-bottom: var(--spacing-lg);
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: var(--spacing-xs);
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: var(--spacing-md);
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-family: inherit;
+    transition: all var(--transition-fast);
+}
+
+.form-group textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+}
+
+.form-group small {
+    display: block;
+    margin-top: var(--spacing-xs);
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.option-input-group {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
+}
+
+.option-input-group input {
+    flex: 1;
+}
+
+.option-input-group button {
+    padding: var(--spacing-sm);
+    background: var(--accent-error);
+    border: none;
+    border-radius: var(--radius-sm);
+    color: white;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.option-input-group button:hover {
+    background: #dc2626;
+}
+
+.add-option-btn {
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--accent-success);
+    border: none;
+    border-radius: var(--radius-sm);
+    color: white;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-weight: 600;
+}
+
+.add-option-btn:hover {
+    background: #059669;
+}
+
+.admin-btn-group {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-xl);
+}
+
+.btn-admin {
+    flex: 1;
+    padding: var(--spacing-md);
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.btn-save {
+    background: var(--gradient-success);
+    color: white;
+}
+
+.btn-save:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-cancel {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+}
+
+.btn-cancel:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.question-list {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-top: var(--spacing-md);
+}
+
+.question-item {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.question-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.question-item-info {
+    flex: 1;
+}
+
+.question-item-id {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-family: 'Courier New', monospace;
+}
+
+.question-item-text {
+    margin-top: var(--spacing-xs);
+    color: var(--text-primary);
+}
+
+.question-item-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.btn-edit,
+.btn-delete {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-size: 0.9rem;
+}
+
+.btn-edit {
+    background: var(--accent-info);
+    color: white;
+}
+
+.btn-edit:hover {
+    background: #2563eb;
+}
+
+.btn-delete {
+    background: var(--accent-error);
+    color: white;
+}
+
+.btn-delete:hover {
+    background: #dc2626;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .header-content {
@@ -759,7 +1104,8 @@ body::before {
         text-align: center;
     }
 
-    .sign-out-btn {
+    .sign-out-btn,
+    .admin-btn {
         margin-left: 0;
         margin-top: var(--spacing-sm);
     }
