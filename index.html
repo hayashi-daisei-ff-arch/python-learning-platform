@@ -18,7 +18,6 @@
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 
-
 <body>
     <!-- Header -->
     <header class="header" id="main-header" style="display: none;">
@@ -298,18 +297,37 @@
                         <button class="btn-admin btn-save" onclick="addNewCourse()">追加</button>
                         <button class="btn-admin btn-cancel" onclick="clearCourseForm()">クリア</button>
                     </div>
-                    document.getElementById('main-header').style.display = 'block';
-                    } else {
-                    document.getElementById('main-header').style.display = 'none';
-                    }
-                    });
+                </div>
+            </div>
+        </section>
+    </main>
 
-                    observer.observe(document.getElementById('main-content'), {
-                    attributes: true,
-                    attributeFilter: ['style']
-                    });
-                    });
-                    </script>
+    <!-- Scripts -->
+    <script src="config.js"></script>
+    <script src="utils.js"></script>
+    <script src="questions.js"></script>
+    <script src="tracker.js"></script>
+    <script src="sheets-api.js"></script>
+    <script src="admin.js"></script>
+    <script src="app.js"></script>
+
+    <script>
+        // Show header when user is logged in
+        document.addEventListener('DOMContentLoaded', () => {
+            const observer = new MutationObserver(() => {
+                if (document.getElementById('main-content').style.display === 'block') {
+                    document.getElementById('main-header').style.display = 'block';
+                } else {
+                    document.getElementById('main-header').style.display = 'none';
+                }
+            });
+
+            observer.observe(document.getElementById('main-content'), {
+                attributes: true,
+                attributeFilter: ['style']
+            });
+        });
+    </script>
 </body>
 
 </html>
