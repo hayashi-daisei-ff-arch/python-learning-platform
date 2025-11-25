@@ -1142,25 +1142,6 @@ body::before {
     }
 }
 
-.loading {
-    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-/* Button layout for start screen */
-.button-group-vertical {
-    display: flex;
-    ```css background: var(--accent-error);
-    border: none;
-    border-radius: var(--radius-sm);
-    color: white;
-    cursor: pointer;
-    transition: all var(--transition-fast);
-}
-
-.option-input-group button:hover {
-    background: #dc2626;
-}
-
 .add-option-btn {
     padding: var(--spacing-sm) var(--spacing-md);
     background: var(--accent-success);
@@ -1361,5 +1342,3 @@ body::before {
 .btn-full-width {
     width: 100%;
 }
-
-```
