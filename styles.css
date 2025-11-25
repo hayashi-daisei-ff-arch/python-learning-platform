@@ -95,20 +95,6 @@ body::before {
     backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     padding: var(--spacing-md);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: var(--shadow-md);
-}
-
-.header-content {
-    max-width: 1200px;
-    gap: var(--spacing-sm);
-}
-
-.user-avatar {
-    width: 40px;
-    height: 40px;
     border-radius: 50%;
     border: 2px solid var(--accent-primary);
 }
