@@ -84,24 +84,6 @@ body::before {
 
 /* Container */
 .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: var(--spacing-md);
-}
-
-/* Header */
-.header {
-    background: var(--bg-glass);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding: var(--spacing-md);
-    border-radius: 50%;
-    border: 2px solid var(--accent-primary);
-}
-
-.user-details {
-    display: flex;
-    flex-direction: column;
     align-items: flex-start;
 }
 
