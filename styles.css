@@ -210,18 +210,6 @@ body::before {
 }
 
 .auth-card p {
-    color: var(--text-secondary);
-    margin-bottom: var(--spacing-lg);
-    font-size: 1.1rem;
-}
-
-#google-signin-button {
-    margin: var(--spacing-lg) auto;
-}
-
-/* Configuration Warning */
-#config-warning {
-    background: var(--bg-glass);
     backdrop-filter: blur(10px);
     border: 2px solid var(--accent-warning);
     border-radius: var(--radius-lg);
