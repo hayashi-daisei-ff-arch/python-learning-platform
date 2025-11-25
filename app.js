@@ -447,6 +447,17 @@ function returnToCourseSelection() {
     progressTracker.reset();
 }
 
+// Return to home (course selection)
+function returnToHome() {
+    // Hide admin section if open
+    document.getElementById('admin-section').style.display = 'none';
+
+    // Show course selection
+    returnToCourseSelection();
+
+    showToast('ホーム画面に戻りました', 'info');
+}
+
 // Initialize app
 function initApp() {
     // Check if Google OAuth is configured
