@@ -131,72 +131,22 @@ function startQuiz() {
 
     // Show first question
     showQuestion(0);
+    const label = document.createElement('label');
+    label.className = 'answer-option';
 
-    showToast('学習を開始しました！', 'success');
-}
+    const radio = document.createElement('input');
+    radio.type = 'radio';
+    radio.name = 'answer';
+    radio.value = option;
+    radio.id = `option-${index}`;
 
-// Show question
-function showQuestion(index) {
-    if (index >= currentQuestions.length) {
-        showCompletionScreen();
-        return;
-    }
+    const span = document.createElement('span');
+    span.textContent = option;
 
-    currentQuestionIndex = index;
-    const question = currentQuestions[index];
-
-    // Start tracking this question
-    progressTracker.startQuestion();
-
-    // Update progress display
-    updateProgressDisplay(progressTracker, currentUser.name);
-
-    // Update question number
-    document.getElementById('question-number').textContent = index + 1;
-    document.getElementById('question-total').textContent = currentQuestions.length;
-
-    // Update question text
-    document.getElementById('question-text').textContent = question.question;
-
-    // Render answer options based on question type
-    const answerContainer = document.getElementById('answer-container');
-    answerContainer.innerHTML = '';
-
-    if (question.type === 'single') {
-        renderSingleChoice(question, answerContainer);
-    } else if (question.type === 'multiple') {
-        renderMultipleChoice(question, answerContainer);
-    } else if (question.type === 'text') {
-        renderTextInput(question, answerContainer);
-    }
-
-    // Hide feedback and next button
-    document.getElementById('feedback-area').style.display = 'none';
-    document.getElementById('next-button').style.display = 'none';
-
-    // Show submit button
-    document.getElementById('submit-button').style.display = 'inline-block';
-}
-
-// Render single choice question
-function renderSingleChoice(question, container) {
-    question.options.forEach((option, index) => {
-        const label = document.createElement('label');
-        label.className = 'answer-option';
-
-        const radio = document.createElement('input');
-        radio.type = 'radio';
-        radio.name = 'answer';
-        radio.value = option;
-        radio.id = `option-${index}`;
-
-        const span = document.createElement('span');
-        span.textContent = option;
-
-        label.appendChild(radio);
-        label.appendChild(span);
-        container.appendChild(label);
-    });
+    label.appendChild(radio);
+    label.appendChild(span);
+    container.appendChild(label);
+});
 }
 
 // Render multiple choice question
