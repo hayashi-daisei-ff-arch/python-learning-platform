@@ -7,6 +7,33 @@ let currentQuestions = [];
 let currentQuestionIndex = 0;
 let progressTracker = new ProgressTracker();
 
+// User role management
+function getUserRole(email) {
+    return CONFIG.TEACHER_EMAILS.includes(email)
+        ? CONFIG.ROLES.TEACHER
+        : CONFIG.ROLES.STUDENT;
+}
+
+function isTeacher() {
+    return currentUser && currentUser.role === CONFIG.ROLES.TEACHER;
+}
+
+function isAllowedDomain(email) {
+    // Teachers can log in from any domain
+    if (CONFIG.TEACHER_EMAILS.includes(email)) {
+        return true;
+    }
+    // Students must use the allowed domain
+    return email.endsWith('@' + CONFIG.ALLOWED_STUDENT_DOMAIN);
+}
+
+function updateAdminButtonVisibility() {
+    const adminBtn = document.querySelector('.admin-btn');
+    if (adminBtn) {
+        adminBtn.style.display = isTeacher() ? 'inline-block' : 'none';
+    }
+}
+
 // Google Sign-In initialization
 function initGoogleSignIn() {
     google.accounts.id.initialize({
@@ -30,10 +57,17 @@ function handleCredentialResponse(response) {
     const credential = response.credential;
     const payload = parseJwt(credential);
 
+    // Check if email is from allowed domain
+    if (!isAllowedDomain(payload.email)) {
+        showToast(`ログインできません。学生は @${CONFIG.ALLOWED_STUDENT_DOMAIN} のメールアドレスを使用してください。`, 'error');
+        return;
+    }
+
     currentUser = {
         email: payload.email,
         name: payload.name,
-        picture: payload.picture
+        picture: payload.picture,
+        role: getUserRole(payload.email)
     };
 
     onUserSignedIn();
@@ -60,7 +94,11 @@ function onUserSignedIn() {
     document.getElementById('user-name-display').textContent = currentUser.name;
     document.getElementById('user-email-display').textContent = currentUser.email;
 
-    showToast(`ようこそ、${currentUser.name}さん！`, 'success');
+    // Update admin button visibility
+    updateAdminButtonVisibility();
+
+    const roleText = isTeacher() ? '（教員）' : '';
+    showToast(`ようこそ、${currentUser.name}さん！${roleText}`, 'success');
 }
 
 // Sign out
@@ -118,6 +156,7 @@ function startCourse(courseId) {
 function showStartScreen() {
     document.getElementById('start-screen').style.display = 'block';
     document.getElementById('question-area').style.display = 'none';
+    document.getElementById('completion-screen').style.display = 'none';
     document.getElementById('total-questions').textContent = currentQuestions.length;
 }
 
@@ -131,22 +170,78 @@ function startQuiz() {
 
     // Show first question
     showQuestion(0);
-    const label = document.createElement('label');
-    label.className = 'answer-option';
 
-    const radio = document.createElement('input');
-    radio.type = 'radio';
-    radio.name = 'answer';
-    radio.value = option;
-    radio.id = `option-${index}`;
+    showToast('学習を開始しました！', 'success');
+}
 
-    const span = document.createElement('span');
-    span.textContent = option;
+// Show question
+function showQuestion(index) {
+    if (index >= currentQuestions.length) {
+        showCompletionScreen();
+        return;
+    }
 
-    label.appendChild(radio);
-    label.appendChild(span);
-    container.appendChild(label);
-});
+    currentQuestionIndex = index;
+    const question = currentQuestions[index];
+
+    // Start tracking this question
+    progressTracker.startQuestion();
+
+    // Update progress display
+    updateProgressDisplay(progressTracker, currentUser.name);
+
+    // Update progress bar
+    const progress = ((index + 1) / currentQuestions.length) * 100;
+    document.getElementById('progress-bar').style.width = progress + '%';
+    document.getElementById('progress-text').textContent =
+        `${index + 1} / ${currentQuestions.length} 問完了`;
+
+    // Update question number
+    document.getElementById('question-number').textContent = index + 1;
+    document.getElementById('question-total').textContent = currentQuestions.length;
+
+    // Update question text
+    document.getElementById('question-text').textContent = question.question;
+
+    // Render answer options based on question type
+    const answerContainer = document.getElementById('answer-container');
+    answerContainer.innerHTML = '';
+
+    if (question.type === 'single') {
+        renderSingleChoice(question, answerContainer);
+    } else if (question.type === 'multiple') {
+        renderMultipleChoice(question, answerContainer);
+    } else if (question.type === 'text') {
+        renderTextInput(question, answerContainer);
+    }
+
+    // Hide feedback and next button
+    document.getElementById('feedback-area').style.display = 'none';
+    document.getElementById('next-button').style.display = 'none';
+
+    // Show submit button
+    document.getElementById('submit-button').style.display = 'inline-block';
+}
+
+// Render single choice question
+function renderSingleChoice(question, container) {
+    question.options.forEach((option, index) => {
+        const label = document.createElement('label');
+        label.className = 'answer-option';
+
+        const radio = document.createElement('input');
+        radio.type = 'radio';
+        radio.name = 'answer';
+        radio.value = option;
+        radio.id = `option-${index}`;
+
+        const span = document.createElement('span');
+        span.textContent = option;
+
+        label.appendChild(radio);
+        label.appendChild(span);
+        container.appendChild(label);
+    });
 }
 
 // Render multiple choice question
