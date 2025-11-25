@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python学習プラットフォーム</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Google Sign-In -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header" id="main-header" style="display: none;">
+        <div class="header-content">
+            <div class="logo">🐍 Python学習</div>
+            <div class="user-info">
+                <img id="user-avatar" class="user-avatar" src="" alt="User Avatar">
+                <div class="user-details">
+                    <div id="user-name-display" class="user-name"></div>
+                    <div id="user-email-display" class="user-email"></div>
+                </div>
+                <button class="sign-out-btn" onclick="signOut()">ログアウト</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Configuration Warning -->
+    <div id="config-warning" style="display: none;">
+        <h2>⚠️ 設定が必要です</h2>
+        <p>Google OAuth Client IDが設定されていません。</p>
+        <p><code>config.js</code>ファイルを編集して、Google Cloud Consoleで取得したClient IDを設定してください。</p>
+        <p>詳細は<code>README.md</code>を参照してください。</p>
+    </div>
+
+    <!-- Authentication Section -->
+    <section id="auth-section">
+        <div class="auth-card">
+            <h1>🐍 Python学習プラットフォーム</h1>
+            <p>Pythonの基礎を楽しく学びましょう！</p>
+            <p style="font-size: 0.95rem; color: var(--text-muted);">
+                Gmailアカウントでログインして学習を始めてください
+            </p>
+            <div id="google-signin-button"></div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main id="main-content">
+        <!-- Course Selection Section -->
+        <section id="course-section" class="container">
+            <h2 class="section-title">コースを選択してください</h2>
+            <div class="course-grid">
+                <div class="course-card" onclick="startCourse('python-intro')">
+                    <span class="course-icon">🐍</span>
+                    <h3>Python入門</h3>
+                    <p>Pythonの基礎、データ型、演算、エラー処理を学びます</p>
+                </div>
+                <!-- Future courses can be added here -->
+            </div>
+        </section>
+
+        <!-- Quiz Section -->
+        <section id="quiz-section" class="container">
+            <!-- Quiz Header with Progress -->
+            <div class="quiz-header">
+                <h2 id="course-title"></h2>
+
+                <!-- Progress Stats -->
+                <div class="progress-stats">
+                    <div class="stat-card">
+                        <div class="stat-label">ユーザー名</div>
+                        <div class="stat-value" id="user-name">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">回答済み問題数</div>
+                        <div class="stat-value" id="questions-count">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">現在の問題の誤答数</div>
+                        <div class="stat-value" id="current-errors">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">合計誤答数</div>
+                        <div class="stat-value" id="total-errors">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">平均回答時間</div>
+                        <div class="stat-value" id="avg-time">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">経過時間</div>
+                        <div class="stat-value" id="elapsed-time">00:00</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Start Screen -->
+            <div id="start-screen">
+                <h2>学習を始めましょう！</h2>
+                <p>このコースには <strong id="total-questions">0</strong> 問の問題があります。</p>
+
+                <div class="info-box">
+                    <p><strong>📝 注意事項:</strong></p>
+                    <ul style="text-align: left; margin-left: 2rem; margin-top: 0.5rem;">
+                        <li>問題はあなた専用の順序で表示されます（再現性あり）</li>
+                        <li>正解すると確認コードが表示されます</li>
+                        <li>統計は「終了」ボタンを押した後に集計されます</li>
+                        <li>途中で終了しても、次回は続きから始められます</li>
+                    </ul>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="startQuiz()">スタート</button>
+                    <button class="btn btn-secondary" onclick="returnToCourseSelection()">戻る</button>
+                </div>
+            </div>
+
+            <!-- Question Area -->
+            <div id="question-area">
+                <div class="question-card">
+                    <!-- Question Header -->
+                    <div class="question-header">
+                        <div class="question-number-display">
+                            問題 <span id="question-number">1</span> / <span id="question-total">20</span>
+                        </div>
+                    </div>
+
+                    <!-- Question Text -->
+                    <div id="question-text"></div>
+
+                    <!-- Answer Container -->
+                    <div id="answer-container"></div>
+
+                    <!-- Feedback Area -->
+                    <div id="feedback-area"></div>
+
+                    <!-- Action Buttons -->
+                    <div class="button-group">
+                        <button id="submit-button" class="btn btn-primary" onclick="submitAnswer()">回答する</button>
+                        <button id="next-button" class="btn btn-success" onclick="nextQuestion()"
+                            style="display: none;">次の問題へ</button>
+                    </div>
+                </div>
+
+                <!-- End Session Button -->
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button class="btn btn-error" onclick="endSession()">終了</button>
+                </div>
+            </div>
+
+            <!-- Completion Screen -->
+            <div id="completion-screen">
+                <div class="completion-icon">🎉</div>
+                <h2>お疲れ様でした！</h2>
+                <p>すべての問題を完了しました</p>
+
+                <div class="completion-stats">
+                    <div class="completion-stat">
+                        <span class="completion-stat-label">回答した問題数:</span>
+                        <span class="completion-stat-value" id="final-questions">0</span>
+                    </div>
+                    <div class="completion-stat">
+                        <span class="completion-stat-label">合計誤答数:</span>
+                        <span class="completion-stat-value" id="final-errors">0</span>
+                    </div>
+                    <div class="completion-stat">
+                        <span class="completion-stat-label">経過時間:</span>
+                        <span class="completion-stat-value" id="final-time">0秒</span>
+                    </div>
+                </div>
+
+                <div class="completion-note">
+                    <strong>📊 データ保存について:</strong><br>
+                    「終了」ボタンを押すと、学習データがGoogle Sheetsに保存されます。
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-error" onclick="endSession()">終了してデータを保存</button>
+                    <button class="btn btn-secondary" onclick="returnToCourseSelection()">コース選択に戻る</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Scripts -->
+    <script src="config.js"></script>
+    <script src="utils.js"></script>
+    <script src="questions.js"></script>
+    <script src="tracker.js"></script>
+    <script src="sheets-api.js"></script>
+    <script src="app.js"></script>
+
+    <script>
+        // Show header when user is logged in
+        document.addEventListener('DOMContentLoaded', () => {
+            const observer = new MutationObserver(() => {
+                if (document.getElementById('main-content').style.display === 'block') {
+                    document.getElementById('main-header').style.display = 'block';
+                } else {
+                    document.getElementById('main-header').style.display = 'none';
+                }
+            });
+
+            observer.observe(document.getElementById('main-content'), {
+                attributes: true,
+                attributeFilter: ['style']
+            });
+        });
+    </script>
+</body>
+
+</html>
