@@ -12,6 +12,21 @@ const CONFIG = {
     // Application Settings
     APP_NAME: 'Python学習プラットフォーム',
 
+    // Role Configuration
+    ROLES: {
+        STUDENT: 'student',
+        TEACHER: 'teacher'
+    },
+
+    // Teacher Email Addresses (full access to admin panel)
+    TEACHER_EMAILS: [
+        'hayashi-daisei-ff@s.takagigakuen.ac.jp',
+        'daisei.hayashi@outlook.jp'
+    ],
+
+    // Allowed Domain for Student Login
+    ALLOWED_STUDENT_DOMAIN: 's.takagigakuen.ac.jp',
+
     // Course Configuration
     COURSES: {
         'python-intro': {
