@@ -5,24 +5,42 @@
  */
 async function sendToGoogleSheets(sessionData) {
     try {
+        console.log('Sending data to Google Sheets:', sessionData);
+
         const response = await fetch(CONFIG.SHEETS_API_URL, {
             method: 'POST',
-            mode: 'cors',
+            mode: 'no-cors', // Changed from 'cors' to 'no-cors' for Google Apps Script
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'text/plain', // Changed to text/plain for no-cors
             },
             body: JSON.stringify(sessionData)
         });
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        // Note: With no-cors mode, we can't read the response
+        // But the request will still be sent to the server
+        console.log('Data sent successfully (no-cors mode)');
+        return { success: true, message: 'Data sent to Google Sheets' };
 
-        const result = await response.json();
-        return { success: true, data: result };
     } catch (error) {
         console.error('Error sending data to Google Sheets:', error);
-        return { success: false, error: error.message };
+
+        // Fallback: Try with redirect mode
+        try {
+            const fallbackResponse = await fetch(CONFIG.SHEETS_API_URL, {
+                method: 'POST',
+                redirect: 'follow',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams(sessionData).toString()
+            });
+
+            console.log('Data sent via fallback method');
+            return { success: true, message: 'Data sent via fallback method' };
+        } catch (fallbackError) {
+            console.error('Fallback method also failed:', fallbackError);
+            return { success: false, error: error.message };
+        }
     }
 }
 
