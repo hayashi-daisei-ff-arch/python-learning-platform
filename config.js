@@ -3,11 +3,11 @@ const CONFIG = {
     // Google OAuth 2.0 Client ID
     // TODO: Replace with your actual Google OAuth Client ID
     // Get it from: https://console.cloud.google.com/apis/credentials
-    GOOGLE_CLIENT_ID: 'YOUR_GOOGLE_CLIENT_ID_HERE.apps.googleusercontent.com',
+    GOOGLE_CLIENT_ID: '537299528854-nkfja0tu3saf4vjfsqbsfmn09ltlaabh.apps.googleusercontent.com',
 
     // Google Apps Script Web App URL (for secure Sheets access)
     // TODO: Replace with your deployed Google Apps Script Web App URL
-    SHEETS_API_URL: 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE',
+    SHEETS_API_URL: 'https://script.google.com/macros/s/AKfycbzTk0Q-ptAYr78g2pWNzIvydks-hELiXycrhJnJ3yEUh3Dh6ER9bQbTSu3vLPLHdWs91w/exec',
 
     // Application Settings
     APP_NAME: 'Python学習プラットフォーム',
