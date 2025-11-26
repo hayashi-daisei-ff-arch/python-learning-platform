@@ -85,7 +85,7 @@ function parseJwt(token) {
 }
 
 // Handle user signed in
-function onUserSignedIn() {
+async function onUserSignedIn() {  // ← asyncを追加
     document.getElementById('auth-section').style.display = 'none';
     document.getElementById('main-content').style.display = 'block';
 
@@ -99,6 +99,9 @@ function onUserSignedIn() {
 
     const roleText = isTeacher() ? '（教員）' : '';
     showToast(`ようこそ、${currentUser.name}さん！${roleText}`, 'success');
+
+    // Load questions from Google Sheets  ← この2行を追加
+    await loadQuestionsOnLogin();
 }
 
 // Sign out
@@ -512,3 +515,21 @@ window.onload = function () {
         }, 1000);
     }
 };
+
+// ログイン時に問題を読み込む関数
+async function loadQuestionsOnLogin() {
+    if (!checkSheetsConfiguration()) {
+        showToast('Google Sheets未設定のため、問題を読み込めません', 'warning');
+        return;
+    }
+
+    showToast('問題を読み込んでいます...', 'info');
+
+    const result = await loadQuestionsFromSheets();
+    if (result.success && result.data) {
+        Object.assign(QUESTIONS, result.data);
+        showToast(`${Object.keys(result.data).length}件のコースデータを読み込みました`, 'success');
+    } else {
+        showToast('問題の読み込みに失敗しました', 'error');
+    }
+}
