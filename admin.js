@@ -97,7 +97,7 @@ function loadCoursesList() {
 }
 
 // Add new question
-function addNewQuestion() {
+async function addNewQuestion() {
     const courseId = document.getElementById('question-course').value;
     const questionType = document.getElementById('question-type').value;
     const questionText = document.getElementById('question-text-input').value;
@@ -155,8 +155,17 @@ function addNewQuestion() {
     clearQuestionForm();
     loadQuestionsList();
 
-    // Save to localStorage
-    saveQuestionsToStorage();
+    // Save to Google Sheets
+    if (checkSheetsConfiguration()) {
+        const result = await saveQuestionToSheets(newQuestion);
+        if (result.success) {
+            showToast('問題をGoogle Sheetsに保存しました', 'success');
+        } else {
+            showToast('Google Sheetsへの保存に失敗しました', 'warning');
+        }
+    } else {
+        showToast('注意: Google Sheets未設定のため、ブラウザのみに保存されます', 'warning');
+    }
 }
 
 // Edit question
@@ -204,7 +213,7 @@ function editQuestion(questionId) {
 }
 
 // Delete question
-function deleteQuestion(questionId) {
+async function deleteQuestion(questionId) {
     if (!confirm('この問題を削除しますか？')) return;
 
     for (const courseId in QUESTIONS) {
@@ -213,14 +222,21 @@ function deleteQuestion(questionId) {
             QUESTIONS[courseId].splice(index, 1);
             showToast('問題を削除しました', 'success');
             loadQuestionsList();
-            saveQuestionsToStorage();
+
+            // Delete from Google Sheets
+            if (checkSheetsConfiguration()) {
+                const result = await deleteQuestionFromSheets(questionId);
+                if (result.success) {
+                    showToast('Google Sheetsからも削除しました', 'success');
+                }
+            }
             return;
         }
     }
 }
 
 // Add new course
-function addNewCourse() {
+async function addNewCourse() {
     const courseId = document.getElementById('course-id').value;
     const courseTitle = document.getElementById('course-title').value;
     const courseDescription = document.getElementById('course-description').value;
@@ -231,17 +247,26 @@ function addNewCourse() {
         return;
     }
 
-    CONFIG.COURSES[courseId] = {
+    const newCourse = {
         id: courseId,
         title: courseTitle,
         description: courseDescription,
         icon: courseIcon || '📚'
     };
 
+    CONFIG.COURSES[courseId] = newCourse;
+
     showToast('コースを追加しました', 'success');
     clearCourseForm();
     loadCoursesList();
-    saveCoursesToStorage();
+
+    // Save to Google Sheets
+    if (checkSheetsConfiguration()) {
+        const result = await saveCourseToSheets(newCourse);
+        if (result.success) {
+            showToast('コースをGoogle Sheetsに保存しました', 'success');
+        }
+    }
 
     // Reload course cards
     loadCourseCards();
@@ -262,7 +287,7 @@ function editCourse(courseId) {
 }
 
 // Delete course
-function deleteCourse(courseId) {
+async function deleteCourse(courseId) {
     if (!confirm('このコースを削除しますか？関連する問題も削除されます。')) return;
 
     delete CONFIG.COURSES[courseId];
@@ -270,8 +295,15 @@ function deleteCourse(courseId) {
 
     showToast('コースを削除しました', 'success');
     loadCoursesList();
-    saveCoursesToStorage();
-    saveQuestionsToStorage();
+
+    // Delete from Google Sheets
+    if (checkSheetsConfiguration()) {
+        const result = await deleteCourseFromSheets(courseId);
+        if (result.success) {
+            showToast('Google Sheetsからも削除しました', 'success');
+        }
+    }
+
     loadCourseCards();
 }
 
@@ -308,31 +340,25 @@ function clearCourseForm() {
     document.querySelector('#add-course-tab .btn-save').textContent = '追加';
 }
 
-// Save questions to localStorage
-function saveQuestionsToStorage() {
-    localStorage.setItem('python-learning-questions', JSON.stringify(QUESTIONS));
-}
+// Note: Questions and courses are now saved to Google Sheets
+// These functions are kept for backward compatibility but are deprecated
 
-// Save courses to localStorage
-function saveCoursesToStorage() {
-    localStorage.setItem('python-learning-courses', JSON.stringify(CONFIG.COURSES));
-}
-
-// Load questions from localStorage
-function loadQuestionsFromStorage() {
-    const saved = localStorage.getItem('python-learning-questions');
-    if (saved) {
-        const loaded = JSON.parse(saved);
-        Object.assign(QUESTIONS, loaded);
+// Load questions from Google Sheets on startup
+async function loadQuestionsFromSheetsOnInit() {
+    if (!checkSheetsConfiguration()) {
+        console.log('Google Sheets not configured, using default questions');
+        return;
     }
-}
 
-// Load courses from localStorage
-function loadCoursesFromStorage() {
-    const saved = localStorage.getItem('python-learning-courses');
-    if (saved) {
-        const loaded = JSON.parse(saved);
-        Object.assign(CONFIG.COURSES, loaded);
+    try {
+        const result = await loadQuestionsFromSheets();
+        if (result.success && result.data) {
+            // Merge loaded questions with existing ones
+            Object.assign(QUESTIONS, result.data);
+            console.log('Questions loaded from Google Sheets');
+        }
+    } catch (error) {
+        console.error('Failed to load questions from Google Sheets:', error);
     }
 }
 
@@ -358,8 +384,10 @@ function loadCourseCards() {
 }
 
 // Initialize admin on page load
-window.addEventListener('load', () => {
-    loadQuestionsFromStorage();
-    loadCoursesFromStorage();
+window.addEventListener('load', async () => {
+    // Try to load from Google Sheets first
+    await loadQuestionsFromSheetsOnInit();
+
+    // Load course cards
     loadCourseCards();
 });
