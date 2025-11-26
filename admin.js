@@ -157,11 +157,16 @@ async function addNewQuestion() {
 
     // Save to Google Sheets
     if (checkSheetsConfiguration()) {
-        const result = await saveQuestionToSheets(newQuestion);
-        if (result.success) {
-            showToast('問題をGoogle Sheetsに保存しました', 'success');
-        } else {
-            showToast('Google Sheetsへの保存に失敗しました', 'warning');
+        try {  // ← 追加
+            const result = await saveQuestionToSheets(newQuestion);
+            if (result.success) {
+                showToast('問題をGoogle Sheetsに保存しました', 'success');
+            } else {
+                showToast('Google Sheetsへの保存に失敗しました: ' + (result.error || '不明なエラー'), 'warning');
+            }
+        } catch (error) {  // ← 追加
+            console.error('Error saving question:', error);
+            showToast('エラー: ' + error.message, 'error');
         }
     } else {
         showToast('注意: Google Sheets未設定のため、ブラウザのみに保存されます', 'warning');
