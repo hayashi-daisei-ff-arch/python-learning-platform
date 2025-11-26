@@ -516,20 +516,39 @@ window.onload = function () {
     }
 };
 
-// ログイン時に問題を読み込む関数
+// ログイン時に問題とコースを読み込む関数
 async function loadQuestionsOnLogin() {
     if (!checkSheetsConfiguration()) {
         showToast('Google Sheets未設定のため、問題を読み込めません', 'warning');
         return;
     }
 
-    showToast('問題を読み込んでいます...', 'info');
+    showToast('データを読み込んでいます...', 'info');
 
-    const result = await loadQuestionsFromSheets();
-    if (result.success && result.data) {
-        Object.assign(QUESTIONS, result.data);
-        showToast(`${Object.keys(result.data).length}件のコースデータを読み込みました`, 'success');
+    // 問題を読み込み
+    const questionsResult = await loadQuestionsFromSheets();
+    if (questionsResult.success && questionsResult.data) {
+        Object.assign(QUESTIONS, questionsResult.data);
+        console.log('Questions loaded:', Object.keys(questionsResult.data).length, 'courses');
+    }
+
+    // コースを読み込み
+    const coursesResult = await loadCoursesFromSheets();
+    if (coursesResult.success && coursesResult.data) {
+        Object.assign(CONFIG.COURSES, coursesResult.data);
+        console.log('Courses loaded:', Object.keys(coursesResult.data).length, 'courses');
+
+        // コースカードを再読み込み
+        loadCourseCards();
+    }
+
+    // 結果を表示
+    const questionCount = questionsResult.success ? Object.keys(questionsResult.data || {}).length : 0;
+    const courseCount = coursesResult.success ? Object.keys(coursesResult.data || {}).length : 0;
+
+    if (questionCount > 0 || courseCount > 0) {
+        showToast(`データ読み込み完了: コース${courseCount}件、問題${questionCount}コース分`, 'success');
     } else {
-        showToast('問題の読み込みに失敗しました', 'error');
+        showToast('データの読み込みに失敗しました', 'error');
     }
 }
