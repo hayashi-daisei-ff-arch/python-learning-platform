@@ -7,7 +7,7 @@ const CONFIG = {
 
     // Google Apps Script Web App URL (for secure Sheets access)
     // TODO: Replace with your deployed Google Apps Script Web App URL
-    SHEETS_API_URL: 'https://script.google.com/macros/s/AKfycbzTk0Q-ptAYr78g2pWNzIvydks-hELiXycrhJnJ3yEUh3Dh6ER9bQbTSu3vLPLHdWs91w/exec',
+    SHEETS_API_URL: 'https://script.google.com/macros/s/AKfycbzc_YEvd1NOJvJ4menpNoYrNDql2rz0rGXsxgsHDSDFoSMJj5UxLL5Z9WgcbNJEDLJf2Q/exec',
 
     // Application Settings
     APP_NAME: 'Python学習プラットフォーム',
