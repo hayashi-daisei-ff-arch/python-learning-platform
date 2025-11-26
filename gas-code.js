@@ -37,6 +37,8 @@ function doGet(e) {
 
         if (type === 'questions') {
             return loadAllQuestions();
+        } else if (type === 'courses') {  // ← 追加
+            return loadAllCourses();        // ← 追加
         }
 
         return ContentService.createTextOutput(JSON.stringify({
@@ -51,7 +53,6 @@ function doGet(e) {
         })).setMimeType(ContentService.MimeType.JSON);
     }
 }
-
 // セッションデータを処理（既存機能）
 function handleSessionData(data) {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -320,5 +321,39 @@ function deleteCourse(courseId) {
     return ContentService.createTextOutput(JSON.stringify({
         success: false,
         error: 'Course not found'
+    })).setMimeType(ContentService.MimeType.JSON);
+}
+
+// 全てのコースを読み込み
+function loadAllCourses() {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = ss.getSheetByName('Courses');
+
+    if (!sheet) {
+        return ContentService.createTextOutput(JSON.stringify({
+            success: true,
+            courses: {}
+        })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    const data = sheet.getDataRange().getValues();
+    const courses = {};
+
+    // ヘッダー行をスキップ
+    for (let i = 1; i < data.length; i++) {
+        const row = data[i];
+        const courseId = row[0];
+
+        courses[courseId] = {
+            id: row[0],
+            title: row[1],
+            description: row[2],
+            icon: row[3]
+        };
+    }
+
+    return ContentService.createTextOutput(JSON.stringify({
+        success: true,
+        courses: courses
     })).setMimeType(ContentService.MimeType.JSON);
 }
