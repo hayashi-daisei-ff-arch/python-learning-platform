@@ -242,12 +242,24 @@ async function deleteQuestion(questionId) {
 
 // Add new course
 async function addNewCourse() {
-    const courseId = document.getElementById('course-id').value;
-    const courseTitle = document.getElementById('course-title').value;
+    const courseIdInput = document.getElementById('course-id');
+    const courseTitleInput = document.getElementById('course-title');
+
+    if (!courseIdInput || !courseTitleInput) {
+        console.error('Input elements not found');
+        showToast('入力フォームが見つかりません', 'error');
+        return;
+    }
+
+    const courseId = courseIdInput.value;
+    const courseTitle = courseTitleInput.value;
     const courseDescription = document.getElementById('course-description').value;
     const courseIcon = document.getElementById('course-icon').value;
 
+    console.log('Adding new course:', { courseId, courseTitle, courseDescription, courseIcon });
+
     if (!courseId || !courseTitle) {
+        console.warn('Validation failed: Missing ID or Title');
         showToast('コースIDとタイトルは必須です', 'error');
         return;
     }
