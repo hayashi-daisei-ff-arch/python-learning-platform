@@ -1,18 +1,20 @@
-// Admin panel functionality for Python Learning Platform
+// Admin panel logic
 
-// Admin state
-let adminMode = false;
-let currentEditingQuestion = null;
+// Check if user is teacher
+function checkAdminAccess() {
+    if (!isTeacher()) {
+        showToast('アクセス権限がありません', 'error');
+        return false;
+    }
+    return true;
+}
 
 // Toggle admin panel
 function toggleAdminPanel() {
-    // Check if user is a teacher
-    if (!isTeacher()) {
-        showToast('管理機能は教員ユーザーのみ利用可能です', 'error');
-        return;
-    }
+    if (!checkAdminAccess()) return;
 
-    adminMode = !adminMode;
+    const adminSection = document.getElementById('admin-section');
+    const adminMode = adminSection.style.display === 'none';
 
     if (adminMode) {
         document.getElementById('course-section').style.display = 'none';
@@ -46,6 +48,7 @@ function switchAdminTab(tabName) {
 function loadAdminData() {
     loadQuestionsList();
     loadCoursesList();
+    updateCourseSelectOptions();
 }
 
 // Load questions list
@@ -76,7 +79,12 @@ function loadQuestionsList() {
 // Load courses list
 function loadCoursesList() {
     const container = document.getElementById('courses-list');
+    if (!container) return;
+
     container.innerHTML = '';
+
+    // Update course select options as well
+    updateCourseSelectOptions();
 
     for (const courseId in CONFIG.COURSES) {
         const course = CONFIG.COURSES[courseId];
@@ -94,6 +102,24 @@ function loadCoursesList() {
     `;
         container.appendChild(item);
     }
+}
+
+// Update course select options in add question form
+function updateCourseSelectOptions() {
+    const select = document.getElementById('question-course');
+    if (!select) return;
+
+    // Keep the first option (placeholder)
+    const firstOption = select.options[0];
+    select.innerHTML = '';
+    select.appendChild(firstOption);
+
+    Object.values(CONFIG.COURSES).forEach(course => {
+        const option = document.createElement('option');
+        option.value = course.id;
+        option.textContent = `${course.title} (${course.id})`;
+        select.appendChild(option);
+    });
 }
 
 // Add new question
@@ -157,14 +183,14 @@ async function addNewQuestion() {
 
     // Save to Google Sheets
     if (checkSheetsConfiguration()) {
-        try {  // ← 追加
+        try {
             const result = await saveQuestionToSheets(newQuestion);
             if (result.success) {
                 showToast('問題をGoogle Sheetsに保存しました', 'success');
             } else {
                 showToast('Google Sheetsへの保存に失敗しました: ' + (result.error || '不明なエラー'), 'warning');
             }
-        } catch (error) {  // ← 追加
+        } catch (error) {
             console.error('Error saving question:', error);
             showToast('エラー: ' + error.message, 'error');
         }
@@ -243,7 +269,7 @@ async function deleteQuestion(questionId) {
 // Add new course
 async function addNewCourse() {
     const courseIdInput = document.getElementById('course-id');
-    const courseTitleInput = document.getElementById('course-title');
+    const courseTitleInput = document.getElementById('admin-course-title'); // Updated ID
 
     if (!courseIdInput || !courseTitleInput) {
         console.error('Input elements not found');
@@ -279,14 +305,14 @@ async function addNewCourse() {
 
     // Save to Google Sheets
     if (checkSheetsConfiguration()) {
-        try {  // ← エラーハンドリング追加
+        try {
             const result = await saveCourseToSheets(newCourse);
             if (result.success) {
                 showToast('コースをGoogle Sheetsに保存しました', 'success');
             } else {
                 showToast('Google Sheetsへの保存に失敗しました: ' + result.error, 'warning');
             }
-        } catch (error) {  // ← エラーハンドリング追加
+        } catch (error) {
             console.error('Error saving course:', error);
             showToast('エラー: ' + error.message, 'error');
         }
@@ -302,7 +328,7 @@ function editCourse(courseId) {
     if (!course) return;
 
     document.getElementById('course-id').value = course.id;
-    document.getElementById('course-title').value = course.title;
+    document.getElementById('admin-course-title').value = course.title; // Updated ID
     document.getElementById('course-description').value = course.description;
     document.getElementById('course-icon').value = course.icon;
 
@@ -358,7 +384,7 @@ function clearQuestionForm() {
 // Clear course form
 function clearCourseForm() {
     document.getElementById('course-id').value = '';
-    document.getElementById('course-title').value = '';
+    document.getElementById('admin-course-title').value = ''; // Updated ID
     document.getElementById('course-description').value = '';
     document.getElementById('course-icon').value = '';
     document.querySelector('#add-course-tab .btn-save').textContent = '追加';
