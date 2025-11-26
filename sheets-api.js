@@ -213,3 +213,29 @@ async function deleteCourseFromSheets(courseId) {
         return { success: false, error: error.message };
     }
 }
+
+/**
+ * Load courses from Google Sheets
+ */
+async function loadCoursesFromSheets() {
+    try {
+        console.log('Loading courses from Google Sheets');
+
+        const response = await fetch(`${CONFIG.SHEETS_API_URL}?type=courses`, {
+            method: 'GET',
+            mode: 'cors',
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to load courses');
+        }
+
+        const data = await response.json();
+        console.log('Courses loaded successfully:', data);
+        return { success: true, data: data.courses };
+
+    } catch (error) {
+        console.error('Error loading courses from Google Sheets:', error);
+        return { success: false, error: error.message };
+    }
+}
