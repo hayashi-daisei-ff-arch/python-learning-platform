@@ -262,9 +262,16 @@ async function addNewCourse() {
 
     // Save to Google Sheets
     if (checkSheetsConfiguration()) {
-        const result = await saveCourseToSheets(newCourse);
-        if (result.success) {
-            showToast('コースをGoogle Sheetsに保存しました', 'success');
+        try {  // ← エラーハンドリング追加
+            const result = await saveCourseToSheets(newCourse);
+            if (result.success) {
+                showToast('コースをGoogle Sheetsに保存しました', 'success');
+            } else {
+                showToast('Google Sheetsへの保存に失敗しました: ' + result.error, 'warning');
+            }
+        } catch (error) {  // ← エラーハンドリング追加
+            console.error('Error saving course:', error);
+            showToast('エラー: ' + error.message, 'error');
         }
     }
 
