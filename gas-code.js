@@ -37,8 +37,8 @@ function doGet(e) {
 
         if (type === 'questions') {
             return loadAllQuestions();
-        } else if (type === 'courses') {  // ← 追加
-            return loadAllCourses();        // ← 追加
+        } else if (type === 'courses') {
+            return loadAllCourses();
         }
 
         return ContentService.createTextOutput(JSON.stringify({
@@ -53,6 +53,7 @@ function doGet(e) {
         })).setMimeType(ContentService.MimeType.JSON);
     }
 }
+
 // セッションデータを処理（既存機能）
 function handleSessionData(data) {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -220,8 +221,8 @@ function loadAllQuestions() {
             course: row[1],
             type: row[2],
             question: row[3],
-            options: row[4] ? JSON.parse(row[4]) : [],
-            answer: row[5] ? JSON.parse(row[5]) : '',
+            options: parseJsonSafe(row[4], []),
+            answer: parseJsonSafe(row[5], ''),
             explanation: row[6] || ''
         });
     }
@@ -230,6 +231,16 @@ function loadAllQuestions() {
         success: true,
         questions: questions
     })).setMimeType(ContentService.MimeType.JSON);
+}
+
+// 安全にJSONをパースするヘルパー関数
+function parseJsonSafe(jsonString, defaultValue) {
+    if (!jsonString) return defaultValue;
+    try {
+        return JSON.parse(jsonString);
+    } catch (e) {
+        return jsonString || defaultValue;
+    }
 }
 
 // コースリクエストを処理
