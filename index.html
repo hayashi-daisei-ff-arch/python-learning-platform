@@ -297,7 +297,8 @@
                         <input type="text" id="course-icon" placeholder="例: 🚀">
                     </div>
                     <div class="admin-btn-group">
-                        <button class="btn-admin btn-save" onclick="addNewCourse()">追加</button>
+                        <button class="btn-admin btn-save"
+                            onclick="addNewCourse().catch(err => console.error(err))">追加</button>
                         <button class="btn-admin btn-cancel" onclick="clearCourseForm()">クリア</button>
                     </div>
                 </div>
