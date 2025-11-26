@@ -79,11 +79,12 @@ class ProgressTracker {
             timestamp: getCurrentTimestamp(),
             email: userEmail,
             name: userName,
-            course: courseId,
+            courseId: courseId,              // ← "course" から "courseId" に変更
             questionsAnswered: this.questionsAnswered,
             totalErrors: this.totalErrors,
-            averageTime: Math.round(this.getAverageAnswerTime() * 10) / 10, // Round to 1 decimal
-            sessionDuration: this.getSessionDuration()
+            elapsedTime: this.getElapsedTime(),  // ← "averageTime" から "elapsedTime" に変更
+            startTime: this.sessionStartTime,     // ← 追加
+            endTime: this.sessionEndTime          // ← 追加
         };
     }
 }
