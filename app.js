@@ -449,7 +449,6 @@ function returnToCourseSelection() {
     // Reset state
     currentCourse = null;
     currentQuestions = [];
-    currentQuestionIndex = 0;
 }
 
 // Return to home (course selection)
