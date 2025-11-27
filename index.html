@@ -266,6 +266,29 @@
                 <div id="courses-tab" class="admin-tab-content">
                     <h3>登録済みコース</h3>
                 </div>
+                <div id="add-course-tab" class="admin-tab-content">
+                    <h3>新しいコースを追加</h3>
+                    <div class="form-group">
+                        <label>コースID</label>
+                        <input type="text" id="course-id" placeholder="例: python-basics">
+                    </div>
+                    <div class="form-group">
+                        <label>コース名</label>
+                        <input type="text" id="course-title" placeholder="例: Python基礎">
+                    </div>
+                    <div class="form-group">
+                        <label>説明</label>
+                        <textarea id="course-description" placeholder="コースの説明を入力"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>アイコン（絵文字）</label>
+                        <input type="text" id="course-icon" placeholder="例: 🐍">
+                    </div>
+                    <div class="admin-btn-group">
+                        <button class="btn-admin btn-save" onclick="addNewCourse()">追加</button>
+                        <button class="btn-admin btn-cancel" onclick="clearCourseForm()">クリア</button>
+                    </div>
+                </div>
             </div>
         </section>
     </main>
