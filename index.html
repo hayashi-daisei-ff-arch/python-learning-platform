@@ -107,96 +107,99 @@
                         </div>
                     </div>
                 </div>
+        </section>
 
+        <section id="quiz-section" class="container" style="display: none;">
+            <h2 id="course-title" class="section-title"></h2>
 
-                <!-- Start Screen -->
-                <div id="start-screen">
-                    <h2>学習を始めましょう！</h2>
-                    <p>このコースには <strong id="total-questions">0</strong> 問の問題があります。</p>
+            <!-- Start Screen -->
+            <div id="start-screen">
+                <h2>学習を始めましょう！</h2>
+                <p>このコースには <strong id="total-questions">0</strong> 問の問題があります。</p>
 
-                    <div class="info-box">
-                        <p><strong>📝 注意事項:</strong></p>
-                        <ul style="text-align: left; margin-left: 2rem; margin-top: 0.5rem;">
-                            <li>問題はあなた専用の順序で表示されます（再現性あり）</li>
-                            <li>正解すると確認コードが表示されます</li>
-                            <li>統計は「終了」ボタンを押した後に集計されます</li>
-                            <li>途中で終了しても、次回は続きから始められます</li>
-                        </ul>
-                    </div>
-
-                    <div class="button-group-vertical">
-                        <button class="btn btn-primary btn-full-width" onclick="startQuiz()">スタート</button>
-                        <div class="button-group-horizontal">
-                            <button class="btn btn-secondary" onclick="returnToCourseSelection()">戻る</button>
-                            <button class="btn btn-error" onclick="resetProgress()">リセット</button>
-                        </div>
-                    </div>
+                <div class="info-box">
+                    <p><strong>📝 注意事項:</strong></p>
+                    <ul style="text-align: left; margin-left: 2rem; margin-top: 0.5rem;">
+                        <li>問題はあなた専用の順序で表示されます（再現性あり）</li>
+                        <li>正解すると確認コードが表示されます</li>
+                        <li>統計は「終了」ボタンを押した後に集計されます</li>
+                        <li>途中で終了しても、次回は続きから始められます</li>
+                    </ul>
                 </div>
 
-                <!-- Question Area -->
-                <div id="question-area">
-                    <div class="question-card">
-                        <!-- Question Header -->
-                        <div class="question-header">
-                            <div class="question-number-display">
-                                問題 <span id="question-number">1</span> / <span id="question-total">20</span>
-                            </div>
-                        </div>
-
-                        <!-- Question Text -->
-                        <div id="question-text"></div>
-
-                        <!-- Answer Container -->
-                        <div id="answer-container"></div>
-
-                        <!-- Feedback Area -->
-                        <div id="feedback-area"></div>
-
-                        <!-- Action Buttons -->
-                        <div class="button-group">
-                            <button id="submit-button" class="btn btn-primary" onclick="submitAnswer()">回答する</button>
-                            <button id="next-button" class="btn btn-success" onclick="nextQuestion()"
-                                style="display: none;">次の問題へ</button>
-                        </div>
-                    </div>
-
-                    <!-- End Session Button -->
-                    <div style="text-align: center; margin-top: 2rem;">
-                        <button class="btn btn-error" onclick="endSession()">終了</button>
+                <div class="button-group-vertical">
+                    <button class="btn btn-primary btn-full-width" onclick="startQuiz()">スタート</button>
+                    <div class="button-group-horizontal">
+                        <button class="btn btn-secondary" onclick="returnToCourseSelection()">戻る</button>
+                        <button class="btn btn-error" onclick="resetProgress()">リセット</button>
                     </div>
                 </div>
+            </div>
 
-                <!-- Completion Screen -->
-                <div id="completion-screen">
-                    <div class="completion-icon">🎉</div>
-                    <h2>お疲れ様でした！</h2>
-                    <p>すべての問題を完了しました</p>
-
-                    <div class="completion-stats">
-                        <div class="completion-stat">
-                            <span class="completion-stat-label">回答した問題数:</span>
-                            <span class="completion-stat-value" id="final-questions">0</span>
-                        </div>
-                        <div class="completion-stat">
-                            <span class="completion-stat-label">合計誤答数:</span>
-                            <span class="completion-stat-value" id="final-errors">0</span>
-                        </div>
-                        <div class="completion-stat">
-                            <span class="completion-stat-label">経過時間:</span>
-                            <span class="completion-stat-value" id="final-time">0秒</span>
+            <!-- Question Area -->
+            <div id="question-area">
+                <div class="question-card">
+                    <!-- Question Header -->
+                    <div class="question-header">
+                        <div class="question-number-display">
+                            問題 <span id="question-number">1</span> / <span id="question-total">20</span>
                         </div>
                     </div>
 
-                    <div class="completion-note">
-                        <strong>📊 データ保存について:</strong><br>
-                        「終了」ボタンを押すと、学習データがGoogle Sheetsに保存されます。
-                    </div>
+                    <!-- Question Text -->
+                    <div id="question-text"></div>
 
+                    <!-- Answer Container -->
+                    <div id="answer-container"></div>
+
+                    <!-- Feedback Area -->
+                    <div id="feedback-area"></div>
+
+                    <!-- Action Buttons -->
                     <div class="button-group">
-                        <button class="btn btn-error" onclick="endSession()">終了してデータを保存</button>
-                        <button class="btn btn-secondary" onclick="returnToCourseSelection()">コース選択に戻る</button>
+                        <button id="submit-button" class="btn btn-primary" onclick="submitAnswer()">回答する</button>
+                        <button id="next-button" class="btn btn-success" onclick="nextQuestion()"
+                            style="display: none;">次の問題へ</button>
                     </div>
                 </div>
+
+                <!-- End Session Button -->
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button class="btn btn-error" onclick="endSession()">終了</button>
+                </div>
+            </div>
+
+            <!-- Completion Screen -->
+            <div id="completion-screen">
+                <div class="completion-icon">🎉</div>
+                <h2>お疲れ様でした！</h2>
+                <p>すべての問題を完了しました</p>
+
+                <div class="completion-stats">
+                    <div class="completion-stat">
+                        <span class="completion-stat-label">回答した問題数:</span>
+                        <span class="completion-stat-value" id="final-questions">0</span>
+                    </div>
+                    <div class="completion-stat">
+                        <span class="completion-stat-label">合計誤答数:</span>
+                        <span class="completion-stat-value" id="final-errors">0</span>
+                    </div>
+                    <div class="completion-stat">
+                        <span class="completion-stat-label">経過時間:</span>
+                        <span class="completion-stat-value" id="final-time">0秒</span>
+                    </div>
+                </div>
+
+                <div class="completion-note">
+                    <strong>📊 データ保存について:</strong><br>
+                    「終了」ボタンを押すと、学習データがGoogle Sheetsに保存されます。
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-error" onclick="endSession()">終了してデータを保存</button>
+                    <button class="btn btn-secondary" onclick="returnToCourseSelection()">コース選択に戻る</button>
+                </div>
+            </div>
         </section>
 
         <!-- Admin Section -->
