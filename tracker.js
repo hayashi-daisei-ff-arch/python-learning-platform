@@ -17,7 +17,10 @@ class ProgressTracker {
     }
 
     startSession() {
-        this.reset();
+        // セッションが既にアクティブでない場合のみリセット
+        if (!this.isSessionActive) {
+            this.reset();
+        }
         this.sessionStartTime = Date.now();
         this.isSessionActive = true;
     }
