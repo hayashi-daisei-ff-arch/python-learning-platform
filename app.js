@@ -517,38 +517,82 @@ window.onload = function () {
 };
 
 // ログイン時に問題とコースを読み込む関数
+// ログイン時に問題とコースを読み込む関数
 async function loadQuestionsOnLogin() {
     if (!checkSheetsConfiguration()) {
         showToast('Google Sheets未設定のため、問題を読み込めません', 'warning');
         return;
     }
 
-    showToast('データを読み込んでいます...', 'info');
+    // Show loading overlay
+    const loadingOverlay = document.getElementById('loading-overlay');
+    if (loadingOverlay) loadingOverlay.style.display = 'flex';
 
-    // 問題を読み込み
-    const questionsResult = await loadQuestionsFromSheets();
-    if (questionsResult.success && questionsResult.data) {
-        Object.assign(QUESTIONS, questionsResult.data);
-        console.log('Questions loaded:', Object.keys(questionsResult.data).length, 'courses');
-    }
+    try {
+        // 問題を読み込み
+        const questionsResult = await loadQuestionsFromSheets();
+        if (questionsResult.success && questionsResult.data) {
+            Object.assign(QUESTIONS, questionsResult.data);
+            console.log('Questions loaded:', Object.keys(questionsResult.data).length, 'courses');
+        }
 
-    // コースを読み込み
-    const coursesResult = await loadCoursesFromSheets();
-    if (coursesResult.success && coursesResult.data) {
-        Object.assign(CONFIG.COURSES, coursesResult.data);
-        console.log('Courses loaded:', Object.keys(coursesResult.data).length, 'courses');
+        // コースを読み込み
+        const coursesResult = await loadCoursesFromSheets();
+        if (coursesResult.success && coursesResult.data) {
+            Object.assign(CONFIG.COURSES, coursesResult.data);
+            console.log('Courses loaded:', Object.keys(coursesResult.data).length, 'courses');
+        }
 
         // コースカードを再読み込み
         loadCourseCards();
+
+        // 結果を表示
+        const questionCount = questionsResult.success ? Object.keys(questionsResult.data || {}).length : 0;
+        const courseCount = coursesResult.success ? Object.keys(coursesResult.data || {}).length : 0;
+
+        if (questionCount > 0 || courseCount > 0) {
+            showToast(`データ読み込み完了: コース${courseCount}件`, 'success');
+        } else {
+            showToast('データが見つかりませんでした', 'info');
+        }
+
+    } catch (error) {
+        console.error('Error loading data:', error);
+        showToast('データの読み込み中にエラーが発生しました', 'error');
+    } finally {
+        // Hide loading overlay
+        if (loadingOverlay) loadingOverlay.style.display = 'none';
+    }
+}
+
+// Load course cards dynamically
+function loadCourseCards() {
+    const grid = document.querySelector('.course-grid');
+    if (!grid) return;
+
+    grid.innerHTML = '';
+
+    const courses = Object.values(CONFIG.COURSES);
+
+    if (courses.length === 0) {
+        grid.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: var(--text-muted);">
+                <p>現在利用可能なコースはありません。</p>
+                <p>管理者に連絡するか、後で再度確認してください。</p>
+            </div>
+        `;
+        return;
     }
 
-    // 結果を表示
-    const questionCount = questionsResult.success ? Object.keys(questionsResult.data || {}).length : 0;
-    const courseCount = coursesResult.success ? Object.keys(coursesResult.data || {}).length : 0;
-
-    if (questionCount > 0 || courseCount > 0) {
-        showToast(`データ読み込み完了: コース${courseCount}件、問題${questionCount}コース分`, 'success');
-    } else {
-        showToast('データの読み込みに失敗しました', 'error');
-    }
+    courses.forEach(course => {
+        const card = document.createElement('div');
+        card.className = 'course-card';
+        card.onclick = () => startCourse(course.id);
+        card.innerHTML = `
+      <span class="course-icon">${course.icon}</span>
+      <h3>${course.title}</h3>
+      <p>${course.description}</p>
+    `;
+        grid.appendChild(card);
+    });
 }
