@@ -451,7 +451,6 @@ function returnToCourseSelection() {
     currentCourse = null;
     currentQuestions = [];
     currentQuestionIndex = 0;
-    progressTracker.reset();
 }
 
 // Return to home (course selection)
