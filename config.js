@@ -28,16 +28,7 @@ const CONFIG = {
     ALLOWED_STUDENT_DOMAIN: 's.takagigakuen.ac.jp',
 
     // Course Configuration
-    COURSES: {
-        'python-intro': {
-            id: 'python-intro',
-            title: 'Python入門',
-            description: 'Pythonの基礎を学ぶコース',
-            icon: '🐍'
-        }
-        // Future courses can be added here
-        // 'python-advanced': { ... }
-    },
+    COURSES: {},
 
     // Question Settings
     QUESTION_SETTINGS: {
