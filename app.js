@@ -123,20 +123,25 @@ function signOut() {
 }
 
 // Start course
+// Start course
 function startCourse(courseId) {
     if (!currentUser) {
         showToast('先にログインしてください', 'error');
         return;
     }
 
-    currentCourse = CONFIG.COURSES[courseId];
-    if (!currentCourse) {
+    const selectedCourse = CONFIG.COURSES[courseId];
+    if (!selectedCourse) {
         showToast('コースが見つかりません', 'error');
         return;
     }
 
-    // Get shuffled questions for this user
-    currentQuestions = getShuffledQuestions(courseId, currentUser.email);
+    // 同じコースを再度選択した場合は、問題リストを再取得しない
+    if (!currentCourse || currentCourse.id !== courseId) {
+        currentCourse = selectedCourse;
+        // Get shuffled questions for this user
+        currentQuestions = getShuffledQuestions(courseId, currentUser.email);
+    }
 
     if (currentQuestions.length === 0) {
         showToast('このコースには問題がありません', 'error');
