@@ -168,10 +168,15 @@ function showStartScreen() {
 }
 
 // Start quiz session
+// Start quiz session
 function startQuiz() {
-    // セッションが既にアクティブでない場合のみ開始
-    if (!progressTracker.isSessionActive) {
-        progressTracker.startSession();
+    // タイマーが停止している場合のみ開始
+    if (!progressUpdateInterval) {
+        // セッションタイムのみ更新（リセットしない）
+        if (!progressTracker.sessionStartTime) {
+            progressTracker.sessionStartTime = Date.now();
+        }
+        progressTracker.isSessionActive = true;
         startProgressTimer(progressTracker, currentUser.name);
     }
 
