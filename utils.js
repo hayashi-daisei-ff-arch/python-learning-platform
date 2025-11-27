@@ -121,7 +121,13 @@ function formatDuration(seconds) {
  */
 function normalizeAnswer(answer) {
     if (typeof answer === 'string') {
-        return answer.trim().toLowerCase();
+        const trimmed = answer.trim();
+        // 数値に変換可能な場合は数値として扱う
+        const asNumber = Number(trimmed);
+        if (!isNaN(asNumber) && trimmed !== '') {
+            return asNumber;
+        }
+        return trimmed.toLowerCase();
     }
     if (typeof answer === 'number') {
         return answer;
