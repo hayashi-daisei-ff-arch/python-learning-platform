@@ -137,7 +137,6 @@ function startCourse(courseId) {
 
     // Get shuffled questions for this user
     currentQuestions = getShuffledQuestions(courseId, currentUser.email);
-    currentQuestionIndex = 0;
 
     if (currentQuestions.length === 0) {
         showToast('このコースには問題がありません', 'error');
