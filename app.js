@@ -165,14 +165,18 @@ function showStartScreen() {
 
 // Start quiz session
 function startQuiz() {
-    progressTracker.startSession();
-    startProgressTimer(progressTracker, currentUser.name);
+    // セッションが既にアクティブでない場合のみ開始
+    if (!progressTracker.isSessionActive) {
+        progressTracker.startSession();
+        startProgressTimer(progressTracker, currentUser.name);
+    }
 
     document.getElementById('start-screen').style.display = 'none';
     document.getElementById('question-area').style.display = 'block';
 
-    // Show first question
-    showQuestion(0);
+    // 進捗に応じて適切な問題を表示（回答済み問題数から継続）
+    const nextQuestionIndex = progressTracker.questionsAnswered;
+    showQuestion(nextQuestionIndex);
 
     showToast('学習を開始しました！', 'success');
 }
