@@ -431,8 +431,13 @@ async function endSession() {
 
     // Send to Google Sheets
     if (checkSheetsConfiguration()) {
-        showToast('データを保存中...', 'info');
+        // Show loading overlay
+        document.getElementById('loading-overlay').style.display = 'flex';
+
         const result = await sendToGoogleSheets(sessionData);
+
+        // Hide loading overlay
+        document.getElementById('loading-overlay').style.display = 'none';
 
         if (result.success) {
             showToast('データを保存しました', 'success');
